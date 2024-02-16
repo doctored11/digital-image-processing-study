@@ -1,9 +1,8 @@
 xdel();
 clc(); 
 clear
+
 myThisPath = get_absolute_file_path('test0008-BrainLess.sce');
-
-
 imPath = fullfile(myThisPath, 'res', 'testPic.png');
 imgPath = fullfile(myThisPath, 'res', 'test2.png');
 maskPath = fullfile(myThisPath, 'res', 'mask1.jpg');
