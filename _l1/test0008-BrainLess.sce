@@ -3,9 +3,27 @@ clc();
 clear
 
 myThisPath = get_absolute_file_path('test0008-BrainLess.sce');
+//
+//
 imPath = fullfile(myThisPath, 'res', 'testPic.png');
 imgPath = fullfile(myThisPath, 'res', 'test2.png');
 maskPath = fullfile(myThisPath, 'res', 'mask1.jpg');
+
+
+ myMatrix = ([
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
+        0, 255, 255, 0, 0,0, 120, 120, 0, 0;
+        0, 255, 255, 0, 0, 0, 120, 120, 0, 0;
+        0,255, 255, 200, 150, 140, 120, 120, 0, 0;
+        0, 255, 255, 0, 0, 0, 120, 120, 0, 0;
+        0, 255, 255, 0, 0, 0, 120, 120, 0, 0;
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
+ ]);
+    
+//    
+//
+//
 
 im = imread(imPath);
 [m, n, z] = size(im);
@@ -490,16 +508,6 @@ function createMatrixGUI()
     mainWindow = createWindow();
     mainWindow.figure_name = "Матрица чисел в рисуночек";
     
-     myMatrix = ([
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
-        0, 255, 255, 0, 0,0, 120, 120, 0, 0;
-        0, 255, 255, 0, 0, 0, 120, 120, 0, 0;
-        0,255, 255, 200, 150, 140, 120, 120, 0, 0;
-        0, 255, 255, 0, 0, 0, 120, 120, 0, 0;
-        0, 255, 255, 0, 0, 0, 120, 120, 0, 0;
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
-    ]);
     
      numRows = size(myMatrix, 1);
     numCols = size(myMatrix, 2);
