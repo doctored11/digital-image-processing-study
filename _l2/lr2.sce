@@ -16,11 +16,46 @@ function start()
 
 //customHist(im1)
 //customNegative()
+
+
+
+//T5
 scf()
   subplot(2,2,1);xtitle("Оригинал");imshow(im1)
     subplot(2,2,2);customBW(im1,70)
     subplot(2,2,3);customBW(im1,128)
     subplot(2,2,4);customBW(im1,200)
+    
+   scf()
+   resultImage = changeBrightness(im1,5,250)
+   subplot(2,4,1);imshow(im1);xtitle("Оригинал")
+    subplot(2,4,3);imshow(resultImage); ;xtitle("выделение яркости 5-250")
+    subplot(2,4,2);customHist(im1);
+    subplot(2,4,4);customHist(resultImage);
+    
+     resultImage = changeBrightness(im1,50,125)
+     subplot(2,4,5);imshow(resultImage); ;xtitle("выделение яркости 50-125")
+     subplot(2,4,6);customHist(resultImage);
+     
+     resultImage = changeBrightness(im1,190,225)
+     subplot(2,4,7);imshow(resultImage); ;xtitle("выделение яркости 190-225")
+     subplot(2,4,8);customHist(resultImage);
+     
+       scf()
+   resultImage = changeBrightness(im1,10,50)
+   subplot(2,4,1);imshow(im1);xtitle("Оригинал")
+    subplot(2,4,3);imshow(resultImage); ;xtitle("выделение яркости 10-50")
+    subplot(2,4,2);customHist(im1);
+    subplot(2,4,4);customHist(resultImage);
+    
+     resultImage = changeBrightness(im1,225,245)
+     subplot(2,4,5);imshow(resultImage); ;xtitle("выделение яркости 225-245")
+     subplot(2,4,6);customHist(resultImage);
+     
+     resultImage = changeBrightness(im1,128,129)
+     subplot(2,4,7);imshow(resultImage); ;xtitle("выделение яркости 128-129")
+     subplot(2,4,8);customHist(resultImage);
+   
 endfunction
 
 function getGrayHistsOfChannels()
@@ -148,3 +183,23 @@ function customBW(imageGray,trash)
 
 
 endfunction
+function resultImage = changeBrightness(imGray, xMin, xMax)
+    dataType = typeof(imGray);
+
+
+ resultImage = round((255 / double(xMax - xMin)) * double(imGray - xMin));
+
+
+
+    resultImage(imGray < xMin) = 0;
+    resultImage(imGray > xMax) = 255;
+
+
+    resultImage = convertToType(dataType, resultImage);
+endfunction
+
+
+
+
+
+
