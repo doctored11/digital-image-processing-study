@@ -20,8 +20,25 @@ function start()
 //     //    4
 //    testHightPassFilter(im)
     //5
-   customNoiseImg = makeCustomNoise(im,15)
-   useCustomFilter(im)
+//    customNoiseImg = makeCustomNoise(im,15)
+//    restoreImg =  useCustomLowPassFilter(customNoiseImg)
+//     scf()
+//     subplot(1, 2, 1); imshow(customNoiseImg); title('Исходное изображение');
+//     subplot(1, 2, 2); imshow(restoreImg); title('Восстановленное изображение НЧФ');
+//     
+//      hightImg =  useCustomHightPassFilter(restoreImg)
+//      scf()
+//     subplot(1, 2, 1); imshow(restoreImg); title('Исходное изображение');
+//     subplot(1, 2, 2); imshow(hightImg); title('Четкое изображение ВЧФ');
+     
+     
+     //6
+     customNoiseImg = makeCustomNoise(im,15)
+    restoreImg =  CustomFullFilter(customNoiseImg)
+   
+     
+     
+   
 endfunction
 
 
@@ -218,60 +235,136 @@ function imgCustomNoise = makeCustomNoise(image, percent)
     imshow((imgCustomNoise));
 endfunction
 
-function restoreImg = useCustomFilter(image)
-        imageGray = rgb2gray(image);
-    filterMatrix =  [1, 1, 1;
-                     1, -8, 1;
-                     1, 1, 1];
+function restoreImg = useCustomLowPassFilter(imageGray)
+     filterMatrix = double( 1/14 * [1, 2, 1;
+                     2, 4, 2;
+                     2, 1, 2])
+      restoreImg = useCustomFilter(filterMatrix,imageGray)
+   
+   
+       
+endfunction
+
+
+function restoreImg = useCustomHightPassFilter(imageGray)
+//     filterMatrix = double( [-1, -1, -1;
+//                     -1, 8, -1;
+//                     -1, -1, -1])
+
+// filterMatrix = double( [-1, -3, -4,-3,-1;
+//                     -3, 0, 6,0,-3;
+//                     -4, 6, 20,6,-4;
+//                      -3, 0, 6,0,-3;
+//                      -1, -3, -4,-3,-1;])
+
+     filterMatrix = double(-1 .* [-1, -1, -1;
+                     -1, 8, -1;
+                     -1, -1, -1])
+    centerPixelValue = filterMatrix(floor(size(filterMatrix, 1)/2) + 1, floor(size(filterMatrix, 2)/2) + 1);
+
+    
+    restoreImg = useCustomFilter(filterMatrix, imageGray);
+
+    [rows, cols] = size(imageGray);
+    
+    if centerPixelValue > 0
+        restoreImg = imageGray - restoreImg;
+    else
+        restoreImg = imageGray + restoreImg;
+    end
+   
+         
+endfunction
+
+
+
+function restoreImg = useCustomFilter(filterMatrix,imageGray)
+        
+   
     
     [rows, cols] = size(imageGray);
     [filterRows, filterCols] = size(filterMatrix);
 
-    padding = (size(filterMatrix) - 1) / 2;
+    padding = (size(filterMatrix,2) - 1) / 2;
+    disp('паддинг',padding,size(filterMatrix,2))
     
-    paddedImg = zeros(rows + 2 * padding(1), cols + 2 * padding(2));
-
-    paddedImg((padding(1) + 1):(rows + padding(1)), (padding(2) + 1):(cols + padding(2))) = imageGray;
+   
     
     
 //       disp(paddedImg(1,:))
 //    заполнение падиногов этих
-     for i = 1:padding(1)
-        paddedImg(i, (padding(2) + 1):(cols + padding(2))) = imageGray(padding(1) - i + 1, :);
-    end
-
-
-    for i = 1:padding(1)
-    paddedImg(rows + padding(1) + i, (padding(2) + 1):(cols + padding(2))) = imageGray(rows - i + 1, :);
-
-    end
-
-
-    for j = 1:padding(2)
-        paddedImg((padding(1) + 1):(rows + padding(1)), j) = imageGray(:, padding(2) - j + 1);
-    end
-
-
-    for j = 1:padding(2)
-    paddedImg((padding(1) + 1):(rows + padding(1)), cols + padding(2) + j) = imageGray(:, cols - j + 1);
-
-    end
+     paddedImg = fillPadding(imageGray, padding);
 //    
 //    disp(paddedImg(1,:))
     restoredImg = zeros(rows, cols);
-    
-    for i = (1 + padding(1)): (rows + padding(1))
-        for j = (1 + padding(2)): (cols + padding(2))
-            window = paddedImg((i - padding(1)): (i + padding(1)), (j - padding(2)): (j + padding(2)));
-            restoredImg(i - padding(1), j - padding(2)) = sum(sum(window .* filterMatrix));
+
+
+    for i = (1 + padding): (rows + padding)
+        for j = (1 + padding): (cols + padding)
+            
+            window = paddedImg((i - padding): (i + padding), (j - padding): (j + padding));
+            filteredValue = min(max(sum(window .* filterMatrix), 0), 255);
+            
+            restoredImg(i - padding, j - padding) = uint8(filteredValue); 
         end
     end
 
-    restoreImg = uint8(restoredImg);
 
-    scf()
-    subplot(1, 2, 1); imshow(imageGray); title('Исходное изображение');
-    subplot(1, 2, 2); imshow(restoreImg); title('Восстановленное изображение');
-//    тут получать картинку и если это высокие частоты то складывать с исходником
+    restoreImg = uint8(restoredImg);
+   
+
 endfunction
 
+
+
+function restoreImg = useCustomMedianFilter(imageGray, filterSize)
+    [rows, cols] = size(imageGray);
+    padding = (filterSize - 1) / 2;
+
+    paddedImg = fillPadding(imageGray, padding);
+
+    
+    paddedImg((padding + 1):(rows + padding), (padding + 1):(cols + padding)) = imageGray;
+
+    restoreImg = zeros(rows, cols);
+                
+    for i = (1 + padding): (rows + padding)
+        for j = (1 + padding): (cols + padding)
+            window = paddedImg((i - padding):(i + padding), (j - padding):(j + padding));
+            
+            restoredValue = median(window(:));
+
+
+            restoreImg(i - padding, j - padding) = uint8(max(0, min(255, restoredValue)));
+        end
+    end
+    restoreImg = uint8(restoreImg);
+    
+endfunction
+
+function paddedImg = fillPadding(imageGray, padding)
+    [rows, cols] = size(imageGray);
+    paddedImg = zeros(rows + 2 * padding, cols + 2 * padding);
+
+    for i = 1:padding
+        paddedImg(i, (padding + 1):(cols + padding)) = imageGray(padding - i + 1, :);
+        paddedImg(rows + padding + i, (padding + 1):(cols + padding)) = imageGray(rows - i + 1, :);
+        
+            paddedImg((padding + 1):(rows + padding), i) = imageGray(:, padding - i + 1);
+        paddedImg((padding + 1):(rows + padding), cols + padding + i) = imageGray(:, cols - i + 1);
+    end
+
+ 
+
+    paddedImg((padding + 1):(rows + padding), (padding + 1):(cols + padding)) = imageGray;
+endfunction
+
+function filteredIMG = CustomFullFilter(imageGray)
+   restoreImgMedian =  useCustomMedianFilter(imageGray,3)
+    restoreImgLowPass =  useCustomLowPassFilter(restoreImgMedian);
+     filteredIMG =  useCustomHightPassFilter(restoreImgLowPass);
+     scf()
+    imshow(restoreImgMedian);scf()
+    imshow(restoreImgLowPass);scf()
+    imshow(filteredIMG)
+endfunction
