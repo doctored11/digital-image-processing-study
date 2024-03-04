@@ -20,21 +20,21 @@ function start()
 //     //    4
 //    testHightPassFilter(im)
     //5
-//    customNoiseImg = makeCustomNoise(im,15)
-//    restoreImg =  useCustomLowPassFilter(customNoiseImg)
-//     scf()
-//     subplot(1, 2, 1); imshow(customNoiseImg); title('Исходное изображение');
-//     subplot(1, 2, 2); imshow(restoreImg); title('Восстановленное изображение НЧФ');
-//     
-//      hightImg =  useCustomHightPassFilter(restoreImg)
-//      scf()
-//     subplot(1, 2, 1); imshow(restoreImg); title('Исходное изображение');
-//     subplot(1, 2, 2); imshow(hightImg); title('Четкое изображение ВЧФ');
+    customNoiseImg = makeCustomNoise(im,15)
+    restoreImg =  useCustomLowPassFilter(customNoiseImg)
+     scf()
+     subplot(1, 2, 1); imshow(customNoiseImg); title('Исходное изображение');
+     subplot(1, 2, 2); imshow(restoreImg); title('Восстановленное изображение НЧФ');
+     
+      hightImg =  useCustomHightPassFilter(restoreImg)
+      scf()
+     subplot(1, 2, 1); imshow(restoreImg); title('Исходное изображение');
+     subplot(1, 2, 2); imshow(hightImg); title('Четкое изображение ВЧФ');
      
      
      //6
-     customNoiseImg = makeCustomNoise(im,15)
-    restoreImg =  CustomFullFilter(customNoiseImg)
+//     customNoiseImg = makeCustomNoise(im,15)
+//    restoreImg =  CustomFullFilter(customNoiseImg)
    
      
      
