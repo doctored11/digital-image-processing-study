@@ -1,5 +1,12 @@
 clc();
 clear;
+close(winsid());
+disp('start() to start)')
+
+
+myThisPath = get_absolute_file_path('lr4.sce');
+imPath = fullfile(myThisPath, 'res', 'i.jpg');
+im = imread(imPath);
 
  myMatrix = im2uint8([
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
@@ -15,19 +22,89 @@ clear;
  function start ()
      
 //     1
-imshow(myMatrix)
-//     2
-allOperations()
-//3
-
- delatImg = useMorfOperation(myMatrix,muB1Matrix,"dilation")
- scf()
- imshow(delatImg)
+    //imshow(myMatrix)
+    
+////     2
+    //allOperations()
+    
+////3
+//     scf()
+//     imshow(myMatrix)
+//     
+//     delatImg = useMorfOperation(myMatrix,muB1Matrix,"dilation")
+//     scf()
+//     imshow(delatImg)
+//     
+//     erImg = useMorfOperation(myMatrix,muB1Matrix,"erosion")
+//     scf()
+//     imshow(erImg)
+// 
+//     scf()
+//    //  выделения внешних точек 
+//     imshow(myMatrix-erImg)
+//    // отбеливание
+//     openedImg = useMorfOperation(erImg,muB1Matrix,"dilation")
+//     imshow(myMatrix- openedImg)
+//    // зачернение 
+//    disp([size(myMatrix), size(delatImg)])
+//    closedImg = useMorfOperation(delatImg,muB1Matrix,"erosion")
+//     imshow( closedImg - myMatrix)
  
-  erImg = useMorfOperation(myMatrix,muB1Matrix,"erosion")
- scf()
- imshow(erImg)
+// 4
+    scf()
+    [x,y]=imhist(rgb2gray(im))
+    plot(y,x)
+     binaryImage = im2bw(im,0.5);
+    
+    
+    scf(); 
+    subplot(1,2,1); imshow(im); xtitle('Оригинальное изображение');
+    subplot(1,2,2); imshow(binaryImage); xtitle('Бинаризованное изображение');
 
+    dilatedImg = useMorfOperation(binaryImage, muB1Matrix, "dilation");
+    erodedImg = useMorfOperation(binaryImage, muB1Matrix, "erosion");
+//    
+//    // Размыкание
+       openedImg = useMorfOperation(erodedImg, muB1Matrix, "dilation");
+//    
+//    // Замыкание
+        closedImg = useMorfOperation(dilatedImg, muB1Matrix, "erosion");
+
+//    // Выделение внешних точек
+        outerPoints = binaryImage - im2bw(erodedImg,0.5);
+
+//    
+//    // Отбеливание
+         whitenedImg = binaryImage-im2bw(openedImg,0.5)
+    //    
+//    // Зачернение
+        darkenedImg = im2bw(closedImg,0.5) - binaryImage
+
+//    scf(); 
+//    subplot(3,3,1); imshow(dilatedImg); xtitle('Наращивание');
+//    subplot(3,3,2); imshow(erodedImg); xtitle('Эрозия');
+//    subplot(3,3,3); imshow(openedImg); xtitle('Размыкание');
+//    subplot(3,3,4); imshow(closedImg); xtitle('Замыкание');
+//    subplot(3,3,5); imshow(outerPoints); xtitle('Выделение внешних точек');
+//    subplot(3,3,6); imshow(whitenedImg); xtitle('Отбеливание');
+//    subplot(3,3,7); imshow(darkenedImg); xtitle('Зачернение');
+
+
+//5
+scf()
+S2 = imgradient(binaryImage,muB1Matrix);
+imshow(S2);
+scf()//смотри такой же результат ( из описания функции в scilab)
+imshow(dilatedImg-erodedImg)
+//--
+imout = imfill(binaryImage)
+imshow(imout)
+////--
+
+// TODO покак хз)потом почитаю)
+scf()
+S3 = imhitmiss(~binaryImage,muB1Matrix);
+imshow(S3)
  endfunction
  
  
