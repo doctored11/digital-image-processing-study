@@ -10,22 +10,27 @@ im1=rgb2gray(im)
 
 
 function start()
+//    1
 //    imshow(im1)
 //    getGrayHistsOfChannels()
+////    2
+//
 //    getBinaryIMG()
-
-//customHist(im1)
-//customNegative()
-
-
-
-//T5
+//3.1
+scf()
+customHist(im1)
+customNegative()
+//
+//
+//
+////3.2
 scf()
   subplot(2,2,1);xtitle("Оригинал");imshow(im1)
     subplot(2,2,2);customBW(im1,70)
     subplot(2,2,3);customBW(im1,128)
     subplot(2,2,4);customBW(im1,200)
-    
+//    3.3
+
    scf()
    resultImage = changeBrightness(im1,5,250)
    subplot(2,4,1);imshow(im1);xtitle("Оригинал")
@@ -40,7 +45,7 @@ scf()
      resultImage = changeBrightness(im1,190,225)
      subplot(2,4,7);imshow(resultImage); ;xtitle("выделение яркости 190-225")
      subplot(2,4,8);customHist(resultImage);
-     
+//     
        scf()
    resultImage = changeBrightness(im1,10,50)
    subplot(2,4,1);imshow(im1);xtitle("Оригинал")
