@@ -9,16 +9,16 @@ imPath = fullfile(myThisPath, 'res', 'i.jpg');
 im = imread(imPath);
 function start()
     //1
-    getNoiseImg(im)
+//    getNoiseImg(im)
 //    
 //    //2
-    testMedianFilter(im)
+//    testMedianFilter(im)
 //    
 //    //    3
-    testLowPassFilter(im)
+//    testLowPassFilter(im)
 //    
 //     //    4
-    testHightPassFilter(im)
+//    testHightPassFilter(im)
     //5
 //    customNoiseImg = makeCustomNoise(im,15)
 //    restoreImg =  useCustomLowPassFilter(customNoiseImg)
@@ -33,9 +33,9 @@ function start()
      
      
      //6
-//     customNoiseImg = makeCustomNoise(im,15)
-//     scf();xtitle("Исходник с шумом");imshow(customNoiseImg)
-//    restoreImg =  CustomFullFilter(customNoiseImg)
+     customNoiseImg = makeCustomNoise(im,15)
+     scf();xtitle("Исходник с шумом");imshow(customNoiseImg)
+    restoreImg =  CustomFullFilter(customNoiseImg)
    
      
      
@@ -237,9 +237,15 @@ function imgCustomNoise = makeCustomNoise(image, percent)
 endfunction
 
 function restoreImg = useCustomLowPassFilter(imageGray)
-     filterMatrix = double( 1/14 * [1, 2, 1;
-                     2, 4, 2;
-                     2, 1, 2])
+//     filterMatrix = double( 1/14 * [1, 2, 1;
+//                     2, 4, 2;
+//                     2, 1, 2])
+                     
+      filterMatrix = double(1/571 * [2,7,12,7,2;
+      7,31,52,31,7;
+      12,52,127,52,12;
+      7,31,52,31,7;
+      2,7,12,7,2])
       restoreImg = useCustomFilter(filterMatrix,imageGray)
    
    
@@ -252,15 +258,15 @@ function restoreImg = useCustomHightPassFilter(imageGray)
 //                     -1, 8, -1;
 //                     -1, -1, -1])
 
-// filterMatrix = double( [-1, -3, -4,-3,-1;
-//                     -3, 0, 6,0,-3;
-//                     -4, 6, 20,6,-4;
-//                      -3, 0, 6,0,-3;
-//                      -1, -3, -4,-3,-1;])
+ filterMatrix = double( [-1, -3, -4,-3,-1;
+                     -3, 0, 6,0,-3;
+                     -4, 6, 20,6,-4;
+                      -3, 0, 6,0,-3;
+                      -1, -3, -4,-3,-1;])
 
-     filterMatrix = double(-1 .* [-1, -1, -1;
-                     -1, 8, -1;
-                     -1, -1, -1])
+//     filterMatrix = double(-1 .* [-1, -1, -1;
+//                     -1, 8, -1;
+//                     -1, -1, -1])
     centerPixelValue = filterMatrix(floor(size(filterMatrix, 1)/2) + 1, floor(size(filterMatrix, 2)/2) + 1);
 
     
@@ -361,11 +367,13 @@ function paddedImg = fillPadding(imageGray, padding)
 endfunction
 
 function filteredIMG = CustomFullFilter(imageGray)
-   restoreImgMedian =  useCustomMedianFilter(imageGray,3)
+   restoreImgMedian =  useCustomMedianFilter(imageGray,5)
     restoreImgLowPass =  useCustomLowPassFilter(restoreImgMedian);
      filteredIMG =  useCustomHightPassFilter(restoreImgLowPass);
-     scf(); xtitle("медианный")
+     scf(); 
+     subplot(1,3,1)
+     xtitle("медианный")
     imshow(restoreImgMedian);
-    scf(); xtitle("медианный+НЧФ"); imshow(restoreImgLowPass);
-    scf();xtitle("медианный+НЧФ+ВЧФ");imshow(filteredIMG)
+     subplot(1,3,2) ;xtitle("медианный+НЧФ"); imshow(restoreImgLowPass);
+      subplot(1,3,3) ;xtitle("медианный+НЧФ+ВЧФ");imshow(filteredIMG)
 endfunction

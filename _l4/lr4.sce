@@ -22,10 +22,10 @@ im = imread(imPath);
  function start ()
      
 //     1
-    //imshow(myMatrix)
+//    imshow(myMatrix)
     
 ////     2
-    //allOperations()
+//    allOperations()
     
 ////3
 //     scf()
@@ -42,10 +42,12 @@ im = imread(imPath);
 //     scf()
 //    //  выделения внешних точек 
 //     imshow(myMatrix-erImg)
+//     scf()
 //    // отбеливание
 //     openedImg = useMorfOperation(erImg,muB1Matrix,"dilation")
 //     imshow(myMatrix- openedImg)
 //    // зачернение 
+//    scf()
 //    disp([size(myMatrix), size(delatImg)])
 //    closedImg = useMorfOperation(delatImg,muB1Matrix,"erosion")
 //     imshow( closedImg - myMatrix)
@@ -80,30 +82,39 @@ im = imread(imPath);
 //    // Зачернение
         darkenedImg = im2bw(closedImg,0.5) - binaryImage
 
-//    scf(); 
-//    subplot(3,3,1); imshow(dilatedImg); xtitle('Наращивание');
-//    subplot(3,3,2); imshow(erodedImg); xtitle('Эрозия');
-//    subplot(3,3,3); imshow(openedImg); xtitle('Размыкание');
-//    subplot(3,3,4); imshow(closedImg); xtitle('Замыкание');
-//    subplot(3,3,5); imshow(outerPoints); xtitle('Выделение внешних точек');
-//    subplot(3,3,6); imshow(whitenedImg); xtitle('Отбеливание');
-//    subplot(3,3,7); imshow(darkenedImg); xtitle('Зачернение');
+    scf(); 
+    subplot(3,3,1); imshow(dilatedImg); xtitle('Наращивание');
+    subplot(3,3,2); imshow(erodedImg); xtitle('Эрозия');
+    subplot(3,3,3); imshow(openedImg); xtitle('Размыкание');
+    subplot(3,3,4); imshow(closedImg); xtitle('Замыкание');
+    subplot(3,3,5); imshow(outerPoints); xtitle('Выделение внешних точек');
+    subplot(3,3,6); imshow(whitenedImg); xtitle('Отбеливание');
+    subplot(3,3,7); imshow(darkenedImg); xtitle('Зачернение');
 
 
 //5
+//(п4 раскомент)
 scf()
 S2 = imgradient(binaryImage,muB1Matrix);
+xtitle('imgradient')
 imshow(S2);
 scf()//смотри такой же результат ( из описания функции в scilab)
 imshow(dilatedImg-erodedImg)
-//--
+////--
+scf()
 imout = imfill(binaryImage)
+xtitle('imfill')
 imshow(imout)
+
 ////--
 
-// TODO покак хз)потом почитаю)
+
 scf()
-S3 = imhitmiss(~binaryImage,muB1Matrix);
+
+se = imcreatese('ellipse',3,8);
+
+S3  = imhitmiss(rgb2gray(im),se);
+xtitle('imhitmiss')
 imshow(S3)
  endfunction
  

@@ -13,7 +13,7 @@ maskPath = fullfile(myThisPath, 'res', 'mask1.jpg');
  myMatrix = ([
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
-        0, 255, 255, 0, 0,0, 120, 120, 0, 0;
+        0, -100, 255, 0, 0,0, 120, 120, 0, 0;
         0, 255, 255, 0, 0, 0, 120, 120, 0, 0;
         0,255, 255, 200, 150, 140, 120, 120, 0, 0;
         0, 255, 255, 0, 0, 0, 120, 120, 0, 0;
@@ -545,31 +545,33 @@ endfunction
 
  function drawImagesCallback()
       global numRows numCols inputHandles;
-
-     
-                disp("0_-")
-                
                 updatedMatrix = zeros(numRows, numCols);
                 for i = 1:numRows
                     for j = 1:numCols
-                        updatedMatrix(i, j) = strtod((inputHandles(i, j).string));
+                        updatedMatrix(i, j) =strtod(inputHandles(i, j).string);
                     end
                 end
                 
-                im1 = im2double(updatedMatrix) 
+                disp(updatedMatrix)
+               
+                im1 = im2double(updatedMatrix)  
                 im2 = uint8(updatedMatrix)
                 im3 = int8(updatedMatrix)
                 im4 = uint16(updatedMatrix)
                 im5 = int16(updatedMatrix)
-                im6 = int32(updatedMatrix)
+                im6 = mat2gray(updatedMatrix)
+                disp(im6)
+                disp(int32(updatedMatrix))
+                  
                 
                 scf(2);
                 clf(2);
                  subplot(3,2,1);xtitle("double"); imshow(im1);
-                 subplot(3,2,2);xtitle("int32"); imshow(im6);
+                 subplot(3,2,2);xtitle("mat2gray"); imshow(im6);
                  subplot(3,2,3);xtitle("uint8"); imshow(im2);
                  subplot(3,2,4);xtitle("int8"); imshow(im3);
                  subplot(3,2,5);xtitle("uint16"); imshow(im4);
+                 
                  subplot(3,2,6);xtitle("int16"); imshow(im5);
         
                 

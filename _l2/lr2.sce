@@ -11,56 +11,56 @@ im1=rgb2gray(im)
 
 function start()
 //    1
-//    imshow(im1)
-//    getGrayHistsOfChannels()
+    imshow(im1)
+    getGrayHistsOfChannels()
 ////    2
 //
 //    getBinaryIMG()
 //3.1
-scf()
-customHist(im1)
-customNegative()
-//
+//scf()
+//customHist(im1)
+//customNegative()
+////
 //
 //
 ////3.2
-scf()
-  subplot(2,2,1);xtitle("Оригинал");imshow(im1)
-    subplot(2,2,2);customBW(im1,70)
-    subplot(2,2,3);customBW(im1,128)
-    subplot(2,2,4);customBW(im1,200)
-//    3.3
+//scf()
+//  subplot(2,2,1);xtitle("Оригинал");imshow(im1)
+//    subplot(2,2,2);customBW(im1,70)
+//    subplot(2,2,3);customBW(im1,128)
+//    subplot(2,2,4);customBW(im1,200)
+////    3.3
 
-   scf()
-   resultImage = changeBrightness(im1,5,250)
-   subplot(2,4,1);imshow(im1);xtitle("Оригинал")
-    subplot(2,4,3);imshow(resultImage); ;xtitle("выделение яркости 5-250")
-    subplot(2,4,2);customHist(im1);
-    subplot(2,4,4);customHist(resultImage);
-    
-     resultImage = changeBrightness(im1,50,125)
-     subplot(2,4,5);imshow(resultImage); ;xtitle("выделение яркости 50-125")
-     subplot(2,4,6);customHist(resultImage);
-     
-     resultImage = changeBrightness(im1,190,225)
-     subplot(2,4,7);imshow(resultImage); ;xtitle("выделение яркости 190-225")
-     subplot(2,4,8);customHist(resultImage);
+//   scf()
+//   resultImage = changeBrightness(im1,5,250)
+//   subplot(2,4,1);imshow(im1);xtitle("Оригинал")
+//    subplot(2,4,3);imshow(resultImage); ;xtitle("выделение яркости 5-250")
+//    subplot(2,4,2);customHist(im1);
+//    subplot(2,4,4);customHist(resultImage);
+//    
+//     resultImage = changeBrightness(im1,50,125)
+//     subplot(2,4,5);imshow(resultImage); ;xtitle("выделение яркости 50-125")
+//     subplot(2,4,6);customHist(resultImage);
 //     
-       scf()
-   resultImage = changeBrightness(im1,10,50)
-   subplot(2,4,1);imshow(im1);xtitle("Оригинал")
-    subplot(2,4,3);imshow(resultImage); ;xtitle("выделение яркости 10-50")
-    subplot(2,4,2);customHist(im1);
-    subplot(2,4,4);customHist(resultImage);
-    
-     resultImage = changeBrightness(im1,225,245)
-     subplot(2,4,5);imshow(resultImage); ;xtitle("выделение яркости 225-245")
-     subplot(2,4,6);customHist(resultImage);
-     
-     resultImage = changeBrightness(im1,128,129)
-     subplot(2,4,7);imshow(resultImage); ;xtitle("выделение яркости 128-129")
-     subplot(2,4,8);customHist(resultImage);
-   
+//     resultImage = changeBrightness(im1,190,225)
+//     subplot(2,4,7);imshow(resultImage); ;xtitle("выделение яркости 190-225")
+//     subplot(2,4,8);customHist(resultImage);
+////     
+//       scf()
+//   resultImage = changeBrightness(im1,10,50)
+//   subplot(2,4,1);imshow(im1);xtitle("Оригинал")
+//    subplot(2,4,3);imshow(resultImage); ;xtitle("выделение яркости 10-50")
+//    subplot(2,4,2);customHist(im1);
+//    subplot(2,4,4);customHist(resultImage);
+//    
+//     resultImage = changeBrightness(im1,225,245)
+//     subplot(2,4,5);imshow(resultImage); ;xtitle("выделение яркости 225-245")
+//     subplot(2,4,6);customHist(resultImage);
+//     
+//     resultImage = changeBrightness(im1,128,129)
+//     subplot(2,4,7);imshow(resultImage); ;xtitle("выделение яркости 128-129")
+//     subplot(2,4,8);customHist(resultImage);
+//   
 endfunction
 
 function getGrayHistsOfChannels()
@@ -113,17 +113,14 @@ function getBinaryIMG()
 endfunction
 
 function customHist(imageGray)
-   
-   
-  
-    
+
     imVector = imageGray(:);
     sortedVector = gsort(imVector, "g", "i")
     [x, y] = countOccurrences(sortedVector);
 
 
     plot2d(x,y);
-    xtitle("рукаписаная гистограмма")
+    xtitle("рукописаная гистограмма")
 endfunction
 
 function [x, y] = countOccurrences(sortedVector)
