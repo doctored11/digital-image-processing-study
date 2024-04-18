@@ -11,17 +11,22 @@ function start()
 //    1
     simpleAffine();
 //    2
-   transformedImage =  customScale(5, 5)
+//   transformedImage =  customScale(2, 2)
+//    disp(size(im));disp(size(transformedImage))
+//    scf()
+//    imshow(transformedImage)
+//    //для теста сравнения
+//    scf()
+//    scaleMatrix = [2, 0, 0; 0, 2, 0; 0, 0, 1];
+//     scaledAffine = imtransform(im, scaleMatrix, 'affine');
+//
+//    imshow(scaledAffine);
+//    2rot
+ transformedImage =  customRotate(0.1)
     disp(size(im));disp(size(transformedImage))
     scf()
     imshow(transformedImage)
-    //для теста сравнения
-    scf()
-    scaleMatrix = [5, 0, 0; 0, 5, 0; 0, 0, 1];
-     scaledAffine = imtransform(im, scaleMatrix, 'affine');
 
-    imshow(scaledAffine);
-    title('Масштабирование x: ' + string(sx) + ', y: ' + string(sy));
 
 
 
@@ -82,6 +87,13 @@ function transformedImage =  customScale(sx, sy)
     transformedImage = applyAffineTransform(im, scaleMatrix);
 endfunction
 
+function transformedImage =  customRotate(myAngle)
+      
+    rotMatrix = [cos(myAngle), sin(myAngle), 0; -sin(myAngle), cos(myAngle), 0; 0, 0, 1];
+    transformedImage = applyAffineTransform(im, rotMatrix);
+endfunction
+
+
 function transformedImage = applyAffineTransform(img, transformationMatrix)
     image = rgb2gray(img);
     [rows, cols] = size(image);
@@ -93,10 +105,14 @@ function transformedImage = applyAffineTransform(img, transformationMatrix)
             newX = round(newCoords(1));
             newY = round(newCoords(2));
 
-            if newX >= 1 && newX <= rows && newY >= 1 && newY <= cols
-//                disp([i,j,newX,newY])
-                transformedImage(i, j) = image( newX, newY);
+//            if newX >= 1 && newX <= rows && newY >= 1 && newY <= cols
+////                disp([i,j,newX,newY])
+//                transformedImage(i, j) = image( newX, newY);
+//
+//            end
 
+            if newX >= 1 && newX <= rows && newY >= 1 && newY <= cols
+            transformedImage(newX, newY) = image( i, j);
             end
         end
     end

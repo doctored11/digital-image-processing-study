@@ -11,14 +11,14 @@ im1=rgb2gray(im)
 
 function start()
 //    1
-    imshow(im1)
-    getGrayHistsOfChannels()
+//    imshow(im1)
+//    getGrayHistsOfChannels()
 ////    2
 //
 //    getBinaryIMG()
 //3.1
-//scf()
-//customHist(im1)
+scf()
+customHist(im1)
 //customNegative()
 ////
 //
@@ -113,33 +113,30 @@ function getBinaryIMG()
 endfunction
 
 function customHist(imageGray)
+    [rows, cols] = size(imageGray);
+      maxIntensity = 255;
+    histogram = zeros(maxIntensity +1, 1);
 
-    imVector = imageGray(:);
-    sortedVector = gsort(imVector, "g", "i")
-    [x, y] = countOccurrences(sortedVector);
-
-
-    plot2d(x,y);
-    xtitle("рукописаная гистограмма")
-endfunction
-
-function [x, y] = countOccurrences(sortedVector)
-    x = [];
-    y = [];
-    bufferI = 1;  
-    for i = 2:length(sortedVector)
-        if sortedVector(i) ~= sortedVector(i-1)
-            x(length(x) + 1) = sortedVector(i-1);
-            y(length(y) + 1) = i - bufferI;
-            bufferI = i;
-        end
-        
-        if i == length(sortedVector)
-            x(length(x) + 1) = sortedVector(i);
-            y(length(y) + 1) = i - bufferI + 1;
+    for i = 1:rows
+        for j = 1:cols
+            intensity = imageGray(i, j) + 1;  
+            if intensity >= 1 && intensity <= maxIntensity  
+                histogram(intensity) = histogram(intensity) + 1;
+            end
         end
     end
+
+    plot2d(histogram);
+    xtitle("Рукописная гистограмма");
 endfunction
+
+
+
+
+
+
+
+
 
 function customNegative()
     imGray = rgb2gray(im);
