@@ -485,7 +485,9 @@ function maskImg(img,imgMask)
 
 
     maskResized = imresize(imgMask, [rows1, cols1], 'nearest');
-    maskResized =(maskResized(:, :, 1:1)~= 0)
+   
+    maskResized =(maskResized(:, :, 1:1)~= 0) ; //в bool так переводим
+ 
     scf()
   imshow(img);
    
