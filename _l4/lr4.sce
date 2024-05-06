@@ -19,46 +19,45 @@ im = imread(imPath);
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
  ]);
  muB1Matrix = im2uint8([0,0,0;1,1,0;0,1,0])
+ 
+ 
+ 
  function start ()
+     1
+    imshow(myMatrix)  
+//     2
+    allOperations()
+//3
+     scf()
+     imshow(myMatrix)
      
-//     1
-//    imshow(myMatrix)
-    
-////     2
-//    allOperations()
-    
-////3
-//     scf()
-//     imshow(myMatrix)
-//     
-//     delatImg = useMorfOperation(myMatrix,muB1Matrix,"dilation")
-//     scf()
-//     imshow(delatImg)
-//     
-//     erImg = useMorfOperation(myMatrix,muB1Matrix,"erosion")
-//     scf()
-//     imshow(erImg)
-// 
-//     scf()
-//    //  выделения внешних точек 
-//     imshow(myMatrix-erImg)
-//     scf()
-//    // отбеливание
-//     openedImg = useMorfOperation(erImg,muB1Matrix,"dilation")
-//     imshow(myMatrix- openedImg)
-//    // зачернение 
-//    scf()
-//    disp([size(myMatrix), size(delatImg)])
-//    closedImg = useMorfOperation(delatImg,muB1Matrix,"erosion")
-//     imshow( closedImg - myMatrix)
+     delatImg = useMorfOperation(myMatrix,muB1Matrix,"dilation")
+     scf()
+     imshow(delatImg)
+     
+     erImg = useMorfOperation(myMatrix,muB1Matrix,"erosion")
+     scf()
+     imshow(erImg)
+ 
+     scf()
+    //  выделения внешних точек 
+     imshow(myMatrix-erImg)
+     scf()
+    // отбеливание
+     openedImg = useMorfOperation(erImg,muB1Matrix,"dilation")
+     imshow(myMatrix- openedImg)
+    // зачернение 
+    scf()
+    disp([size(myMatrix), size(delatImg)])
+    closedImg = useMorfOperation(delatImg,muB1Matrix,"erosion")
+     imshow( closedImg - myMatrix)
  
 // 4
     scf()
     [x,y]=imhist(rgb2gray(im))
     plot(y,x)
      binaryImage = im2bw(im,0.5);
-    
-    
+
     scf(); 
     subplot(1,2,1); imshow(im); xtitle('Оригинальное изображение');
     subplot(1,2,2); imshow(binaryImage); xtitle('Бинаризованное изображение');
@@ -90,7 +89,6 @@ im = imread(imPath);
     subplot(3,3,5); imshow(outerPoints); xtitle('Выделение внешних точек');
     subplot(3,3,6); imshow(whitenedImg); xtitle('Отбеливание');
     subplot(3,3,7); imshow(darkenedImg); xtitle('Зачернение');
-
 
 //5
 //(п4 раскомент)
@@ -203,10 +201,26 @@ endfunction
 
 function result = erosion(window, pattern)
 //    в моменте просто не знаю как не спамить переводом типов)
-    pattern = im2bw(pattern, 0); 
-    window = im2bw(window, 0);
-    resultMatrix = im2bw(window .* pattern,0);
+    pattern = customImg2bw(pattern, 0); 
+   
+    window = customImg2bw(window, 0);
+    resultMatrix = customImg2bw(window .* pattern,0);
    
     result = isequal(resultMatrix, pattern);
 endfunction
+
+
+
+function bwImg = customImg2bw(img, thresh)
+    thresh = thresh *255 //для совместимости с ориг im2bw (значение передавать от 0 до 1)
+    [rows, cols] = size(img);
+    bwImg = repmat(%F,[rows, cols]); //просто массив false
+    for i = 1:rows
+        for j = 1:cols
+                bwImg(i, j) =(img(i, j) > thresh);
+
+        end
+    end
+endfunction
+
 

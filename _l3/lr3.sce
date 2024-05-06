@@ -8,28 +8,28 @@ imPath = fullfile(myThisPath, 'res', 'i.jpg');
 
 im = imread(imPath);
 function start()
-    //1
-//    getNoiseImg(im)
-//    
-//    //2
-//    testMedianFilter(im)
-//    
-//    //    3
-//    testLowPassFilter(im)
-//    
-//     //    4
-//    testHightPassFilter(im)
-    //5
-//    customNoiseImg = makeCustomNoise(im,15)
-//    restoreImg =  useCustomLowPassFilter(customNoiseImg)
-//     scf()
-//     subplot(1, 2, 1); imshow(customNoiseImg); title('Исходное изображение');
-//     subplot(1, 2, 2); imshow(restoreImg); title('Восстановленное изображение НЧФ');
-//     
-//      hightImg =  useCustomHightPassFilter(restoreImg)
-//      scf()
-//     subplot(1, 2, 1); imshow(restoreImg); title('Исходное изображение');
-//     subplot(1, 2, 2); imshow(hightImg); title('Четкое изображение ВЧФ');
+    1
+    getNoiseImg(im)
+    
+    //2
+    testMedianFilter(im)
+    
+    //    3
+    testLowPassFilter(im)
+    
+     //    4
+    testHightPassFilter(im)
+//    5
+    customNoiseImg = makeCustomNoise(im,15)
+    restoreImg =  useCustomLowPassFilter(customNoiseImg)
+     scf()
+     subplot(1, 2, 1); imshow(customNoiseImg); title('Исходное изображение');
+     subplot(1, 2, 2); imshow(restoreImg); title('Восстановленное изображение НЧФ');
+     
+      hightImg =  useCustomHightPassFilter(restoreImg)
+      scf()
+     subplot(1, 2, 1); imshow(restoreImg); title('Исходное изображение');
+     subplot(1, 2, 2); imshow(hightImg); title('Четкое изображение ВЧФ');
      
      
      //6
@@ -37,9 +37,7 @@ function start()
      scf();xtitle("Исходник с шумом");imshow(customNoiseImg)
     restoreImg =  CustomFullFilter(customNoiseImg)
    
-     
-     
-   
+
 endfunction
 
 
@@ -218,7 +216,7 @@ function imgCustomNoise = makeCustomNoise(image, percent)
         
         for j = 1:cols
             randPix = rand();
- if (randPix>percent/100) continue end
+            if (randPix>percent/100) continue end
             randNum = rand();
             
             if randNum <= 0.5
@@ -237,15 +235,15 @@ function imgCustomNoise = makeCustomNoise(image, percent)
 endfunction
 
 function restoreImg = useCustomLowPassFilter(imageGray)
-//     filterMatrix = double( 1/14 * [1, 2, 1;
-//                     2, 4, 2;
-//                     2, 1, 2])
+     filterMatrix = double( 1/14 * [1, 2, 1;
+                     2, 4, 2;
+                     2, 1, 2])
                      
-      filterMatrix = double(1/571 * [2,7,12,7,2;
-      7,31,52,31,7;
-      12,52,127,52,12;
-      7,31,52,31,7;
-      2,7,12,7,2])
+//      filterMatrix = double(1/571 * [2,7,12,7,2;
+//      7,31,52,31,7;
+//      12,52,127,52,12;
+//      7,31,52,31,7;
+//      2,7,12,7,2])
       restoreImg = useCustomFilter(filterMatrix,imageGray)
    
    
@@ -254,15 +252,15 @@ endfunction
 
 
 function restoreImg = useCustomHightPassFilter(imageGray)
-//     filterMatrix = double( [-1, -1, -1;
-//                     -1, 8, -1;
-//                     -1, -1, -1])
+     filterMatrix = double(-1.* [-1, -1, -1;
+                     -1, 8, -1;
+                     -1, -1, -1])
 
- filterMatrix = double( [-1, -3, -4,-3,-1;
-                     -3, 0, 6,0,-3;
-                     -4, 6, 20,6,-4;
-                      -3, 0, 6,0,-3;
-                      -1, -3, -4,-3,-1;])
+// filterMatrix = double( [-1, -3, -4,-3,-1;
+//                     -3, 0, 6,0,-3;
+//                     -4, 6, 20,6,-4;
+//                      -3, 0, 6,0,-3;
+//                      -1, -3, -4,-3,-1;])
 
 //     filterMatrix = double(-1 .* [-1, -1, -1;
 //                     -1, 8, -1;
@@ -287,8 +285,6 @@ endfunction
 
 function restoreImg = useCustomFilter(filterMatrix,imageGray)
         
-   
-    
     [rows, cols] = size(imageGray);
     [filterRows, filterCols] = size(filterMatrix);
 

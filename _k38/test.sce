@@ -3,8 +3,9 @@ clear();
 close(winsid());
 
 
-myThisPath = get_absolute_file_path('k38.sce');
+myThisPath = get_absolute_file_path('test.sce');
 imPath = fullfile(myThisPath, 'res', 'Testbuilding.jpg');
 im = imread(imPath);
 
-img = rgb2gray(im)
+im = rgb2gray(im)
+im=im2double(im);
