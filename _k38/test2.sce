@@ -1,80 +1,153 @@
-clc();
-clear();
-close(winsid());
 
-myThisPath = get_absolute_file_path('test2.sce');
-imPath = fullfile(myThisPath, 'res', 'Testbuilding.jpg');
-im = imread(imPath);
-
-im = rgb2gray(im)
-im=im2double(im);
-
-mainWindow = createWindow();
-mainWindow.figure_name = "38 | Границы у полутонового изображения ";
-
-framePlot = uicontrol(mainWindow, ...
-    "style", "frame", ...
-    "constraints", createConstraints("border", "center"), ...
-    "backgroundcolor", [0 0 0], ...
-    "layout", "border", ...
-    "units", "normalized", ...
-    "position", [0, 0.6, 0.4, 0.4]);
+//close(winsid());
+//clc
+//clear
+//myThisPath = get_absolute_file_path('test2.sce');
+//imPath = fullfile(myThisPath, 'res', 'Testbuilding.jpg');
+//im = imread(imPath);
+//im = rgb2gray(im);
+//
+//global hotImg
+//hotImg = im
 
 
- clf(framePlot);
-    a1 = newaxes(framePlot);
-    a1.axes_bounds = [0 0 1 1];
-    sca(a1);
-    
-    imshow(im)
-    
-    
-    
- btnMod = uicontrol(mainWindow, ...
-    "Style", "pushbutton", ...
-    "String", "+Шум", ...
-    "fontSize", 18, ...
-    "ForegroundColor", [0.8, 0.1, 0.1], ...
-    "units", "normalized", ...
-    "position", [0.5, 0.85, 0.4, 0.1], ...
-    "callback", "createMatrixGUI");
+// filterMatrix = 1/16 * [1, 2, 1;
+//                           2, 4, 2;
+//                           1, 2, 1];
+//
+filterMatrix = double(1/571 * [2,7,12,7,2;
+7,31,52,31,7;
+12,52,127,52,12;
+7,31,52,31,7;
+2,7,12,7,2])
+//function start()
+//
+//
+//    MarrHild(im2double(hotImg))
+//endfunction
 
-    
-function noisy_image = add_multiplicative_noise(image, noise_range)
-//    noise_range - кортеж где 1ое мин второе 
-    noisy_image = zeros(size(image));
 
-    for i = 1:size(image, 1)
-        for j = 1:size(image, 2)
+//
+////
+////Интерфейс
+//
+//mainWindow = createWindow();
+//mainWindow.figure_name = "38 | Границы у полутонового изображения ";
+//
+//framePlot = uicontrol(mainWindow, ...
+//    "style", "frame", ...
+//    "constraints", createConstraints("border", "center"), ...
+//    "backgroundcolor", [0 0 0], ...
+//    "layout", "border", ...
+//    "units", "normalized", ...
+//    "position", [0, 0.6, 0.4, 0.4]);
+//
+//
+// clf(framePlot);
+//    a1 = newaxes(framePlot);
+//    a1.axes_bounds = [0 0 1 1];
+//    sca(a1);
+//
+//    imshow(hotImg)
 
-            noise_factor = rand()*(noise_range(2)-noise_range(1))+noise_range(1);
-            noisy_image(i, j) =  min(max(double(image(i, j)) * noise_factor, 0), 255);
-        end
+//
+////    +ШУМ
+//    btnMod = uicontrol(mainWindow, ...
+//        "Style", "pushbutton", ...
+//        "String", "+Шум", ...
+//        "fontSize", 16, ...
+//        "ForegroundColor", [0.8, 0.1, 0.1], ...
+//        "units", "normalized", ...
+//        "position", [0.7, 0.83, 0.2, 0.05], ...
+//        "callback", "addGausNoiseCallBack");
+//
+//     uicontrol(mainWindow, ...
+//        "style", "text", ...
+//        "String", "  min и max шум",...
+//        "units", "normalized", ...
+//        "position", [0.55, 0.9, 0.35, 0.05],...
+//        "HorizontalAlignment", "left", ...
+//        "VerticalAlignment", "middle");
+//
+//     uicontrol(mainWindow, ...
+//        "style", "edit", ...
+//        "String", string(0.9),...
+//        "units", "normalized", ...
+//        "position", [0.55, 0.83, 0.06, 0.05], ...
+//        "tag", "minGausNoise")
+//
+//     uicontrol(mainWindow, ...
+//        "style", "edit", ...
+//        "String", string(0.9),...
+//        "units", "normalized", ...
+//        "position", [0.63, 0.83, 0.06, 0.05], ...
+//        "tag", "maxGausNoise")
+//
+////     -Шум
+//        btnMod = uicontrol(mainWindow, ...
+//        "Style", "pushbutton", ...
+//        "String", "-Шум (НЧФ)", ...
+//        "fontSize", 16, ...
+//        "ForegroundColor", [0.1, 0.8, 0.1], ...
+//        "units", "normalized", ...
+//        "position", [0.55, 0.76, 0.35, 0.05], ...
+//        "callback", "reduceNoiseCallBack");
+//
+//
+//
+//
+//
+//
+    function addGausNoiseCallBack()
+    global hotImg;
+//    todo: сигнализировать о том что идет процесс
+    minVal = getDoubleValueByTag("minGausNoise");
+    maxVal = getDoubleValueByTag("maxGausNoise");
+    disp([minVal,maxVal])
+
+    if (maxVal < minVal)
+        temp = minVal;
+        minVal = maxVal;
+        maxVal = temp;
     end
+    hotImg = addMultiplicativeNoise(hotImg, [minVal, maxVal]);
 
-    noisy_image = uint8(noisy_image);
+    imshow(hotImg)
+//    todo: показывать что все закончено
+    disp('imgNoise show')
 endfunction
-
-defaults = [0, 0, 1, 1, 0, 0 1, 1];
-j=0
-for i =1:8
-    if( modulo(i,2)) then
-        j=j+1
-        uicontrol(mainWindow, ...
-        "style", "text", ...
-        "String", "ТОчка "+ string(j),...
-        "units", "normalized", ...
-        "position", [0.78, 0.65-(j-1)*0.06, 0.11, 0.05]);
-    end
-    
-    defaultValue = defaults(i);
-    stroke = "txt" + string(i);
-    
-     uicontrol(mainWindow, ...
-        "style", "edit", ...
-        "String", string(defaultValue),...
-        "units", "normalized", ...
-        "position", [0.5-(modulo(i,2)-1)*0.11, 0.65-(j-1)*0.06, 0.1, 0.05], ...
-        "tag", stroke);
-    
-end
+//
+//
+//
+//
+//
+//
+//function noisyImage = addMultiplicativeNoise(image, noiseRange)
+////    noise_range - кортеж где 1ое мин второе max
+//    noisyImage = zeros(size(image));
+//
+//    for i = 1:size(image, 1)
+//        for j = 1:size(image, 2)
+//            if(rand()<0.6) noisyImage(i, j)=double(image(i, j));continue end
+//
+//            noiseFactor = rand()*(noiseRange(2)-noiseRange(1))+noiseRange(1);
+//            noisyImage(i, j) =  min(max(double(image(i, j)) * noiseFactor, 0), 255);
+//        end
+//    end
+//
+//    noisyImage = uint8(noisyImage);
+//endfunction
+//
+//function reduceNoiseCallBack()
+////    возможно вставить самописную из Lr3
+//     global hotImg;
+//     hotImg = imfilter(hotImg, filterMatrix);
+//     imshow(hotImg)
+//     disp(' filtered showed')
+//
+//endfunction
+//
+//
+//function valueFromUser = getDoubleValueByTag(tag)
+//     valueFromUser = strtod(findobj(mainWindow, "tag", tag).string);
+//endfunction

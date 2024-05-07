@@ -1,7 +1,7 @@
 
-clc();
-clear();
-close(winsid());
+//clc();
+//clear();
+//close(winsid());
 
 myThisPath = get_absolute_file_path('marrHild.sce');
 imPath = fullfile(myThisPath, 'res', 'j.jpg');
@@ -11,50 +11,51 @@ im = rgb2gray(im)
 im=im2double(im);
 
 
-function start()
+ function MarrHild(im)
+    disp('000')
      sigma = 1.3; //для гауса todo считывать
      sigma2=1.1; // для ЛапласаГауссиана todo считывать
      
      //тут матрицу гауса можно для размытия conv2 с im (опционально)
-     [gaussianMatrixFilt, _n, _n] = getGausMatrix(sigma);
-     
-     im = conv2(im,gaussianMatrixFilt,'same');
-     imshow(im)
+//     [gaussianMatrixFilt, _n, _n] = getGausMatrix(sigma);
+//     
+//     im = conv2(im,gaussianMatrixFilt,'same');
+//     imshow(im)
     //     
      
-     [gaussianMatrix, X, Y] = getGausMatrix(sigma2);
-     lapGausian = getLaplasGausMatrix(sigma2, X, Y);
-     
-     edgeImg = conv2(im,lapGausian,'same') //границы LoG
-    scf()
-    imshow(edgeImg)
+//     [gaussianMatrix, X, Y] = getGausMatrix(sigma2);
+//     lapGausian = getLaplasGausMatrix(sigma2, X, Y);
+//     
+//     edgeImg = conv2(im,lapGausian,'same') //границы LoG
+//    scf()
+//    imshow(edgeImg)
 //     plot3dKernels(X, Y, gaussianMatrix,lapGausian);
 //    plot2dKernels(X, Y, gaussianMatrix,lapGausian);
     
-    trueEdgeImg= findZeroCross(edgeImg,25) // todo считывать trash
-    scf()
-    imshow(trueEdgeImg)
+//    trueEdgeImg= findZeroCross(edgeImg,25) // todo считывать trash
+//    scf()
+//    imshow(trueEdgeImg)
 endfunction
 
 
-function [gaussianKernel, X, Y] = getGausMatrix(sigma) 
-    kernelSize = ceil(10 * sigma);
-    
-    [X, Y] = meshgrid(-kernelSize:kernelSize, -kernelSize:kernelSize);
-    gaussianKernel = exp(-(X.^2 + Y.^2) / (2 * sigma^2));
+//function [gaussianKernel, X, Y] = getGausMatrix(sigma) 
+//    kernelSize = ceil(10 * sigma);
+//    
+//    [X, Y] = meshgrid(-kernelSize:kernelSize, -kernelSize:kernelSize);
+//    gaussianKernel = exp(-(X.^2 + Y.^2) / (2 * sigma^2));
+//
+//    gaussianKernel = gaussianKernel / sum(gaussianKernel(:)); // нормировка
+//endfunction
 
-    gaussianKernel = gaussianKernel / sum(gaussianKernel(:)); // нормировка
-endfunction
 
-
-function laplacianGaussian = getLaplasGausMatrix(sigma,X,Y)
-//    по математическим довадам берем 2ую производную о Гауса
-    gaussianSecondDerivativeX = (-1 + X.^2 / sigma^2) .* exp(-(X.^2 + Y.^2) / (2 * sigma^2)) / sigma^4;
-    gaussianSecondDerivativeY = (-1 + Y.^2 / sigma^2) .* exp(-(X.^2 + Y.^2) / (2 * sigma^2)) / sigma^4;
-
-    laplacianGaussian = gaussianSecondDerivativeX + gaussianSecondDerivativeY;
-    
-endfunction
+//function laplacianGaussian = getLaplasGausMatrix(sigma,X,Y)
+////    по математическим довадам берем 2ую производную о Гауса
+//    gaussianSecondDerivativeX = (-1 + X.^2 / sigma^2) .* exp(-(X.^2 + Y.^2) / (2 * sigma^2)) / sigma^4;
+//    gaussianSecondDerivativeY = (-1 + Y.^2 / sigma^2) .* exp(-(X.^2 + Y.^2) / (2 * sigma^2)) / sigma^4;
+//
+//    laplacianGaussian = gaussianSecondDerivativeX + gaussianSecondDerivativeY;
+//    
+//endfunction
 //todo разделить каждый из них
 function plot3dKernels(X, Y, gaussianKernel,lapGausian)
     scf()
@@ -106,28 +107,28 @@ function plot2dKernels(X, Y, gaussianKernel, lapGausian)
 
 endfunction
 
-
-function zeroCrossImgTrahHold = findZeroCross(image, threshold)
-    [numRows, numCols] = size(image);
-    zeroCrossImg = zeros(numRows, numCols);
-
-    for i = 2:numRows-1
-        for j = 2:numCols-1
-            if (image(i, j) > 0)
-                if (image(i, j+1) >= 0 && image(i, j-1) < 0) || (image(i, j+1) < 0 && image(i, j-1) >= 0)
-                    zeroCrossImg(i, j) = image(i, j+1);
-                elseif (image(i+1, j) >= 0 && image(i-1, j) < 0) || (image(i+1, j) < 0 && image(i-1, j) >= 0)
-                    zeroCrossImg(i, j) = image(i, j+1);
-                elseif (image(i+1, j+1) >= 0 && image(i-1, j-1) < 0) || (image(i+1, j+1) < 0 && image(i-1, j-1) >= 0)
-                    zeroCrossImg(i, j) = image(i, j+1);
-                elseif (image(i-1, j+1) >= 0 && image(i+1, j-1) < 0) || (image(i-1, j+1) < 0 && image(i+1, j-1) >= 0)
-                    zeroCrossImg(i, j) = image(i, j+1);
-                end
-            end
-        end
-    end
-
-    zeroCrossImg = im2uint8(zeroCrossImg);
-    zeroCrossImgTrahHold= zeroCrossImg>threshold;
-end
+//
+//function zeroCrossImgTrahHold = findZeroCross(image, threshold)
+//    [numRows, numCols] = size(image);
+//    zeroCrossImg = zeros(numRows, numCols);
+//
+//    for i = 2:numRows-1
+//        for j = 2:numCols-1
+//            if (image(i, j) > 0)
+//                if (image(i, j+1) >= 0 && image(i, j-1) < 0) || (image(i, j+1) < 0 && image(i, j-1) >= 0)
+//                    zeroCrossImg(i, j) = image(i, j+1);
+//                elseif (image(i+1, j) >= 0 && image(i-1, j) < 0) || (image(i+1, j) < 0 && image(i-1, j) >= 0)
+//                    zeroCrossImg(i, j) = image(i, j+1);
+//                elseif (image(i+1, j+1) >= 0 && image(i-1, j-1) < 0) || (image(i+1, j+1) < 0 && image(i-1, j-1) >= 0)
+//                    zeroCrossImg(i, j) = image(i, j+1);
+//                elseif (image(i-1, j+1) >= 0 && image(i+1, j-1) < 0) || (image(i-1, j+1) < 0 && image(i+1, j-1) >= 0)
+//                    zeroCrossImg(i, j) = image(i, j+1);
+//                end
+//            end
+//        end
+//    end
+//
+//    zeroCrossImg = im2uint8(zeroCrossImg);
+//    zeroCrossImgTrahHold= zeroCrossImg>threshold;
+//end
 
