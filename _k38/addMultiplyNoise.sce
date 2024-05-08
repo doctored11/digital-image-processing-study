@@ -1,10 +1,13 @@
 function addGausNoiseCallBack()
     global hotImg;
+    
+    setStatusWorkOn()
+    
     if (typeof(hotImg)~= "uint8") then
         hotImg = im2uint8(hotImg)
     end
     
-//    todo: сигнализировать о том что идет процесс
+
     minVal = getDoubleValueByTag("minGausNoise");
     maxVal = getDoubleValueByTag("maxGausNoise");
     disp([minVal,maxVal])
@@ -17,8 +20,9 @@ function addGausNoiseCallBack()
     hotImg = addMultiplicativeNoise(hotImg, [minVal, maxVal]);
 
     imshow(hotImg)
-//    todo: показывать что все закончено
+
     disp('imgNoise show')
+    setStatusWorkOf()
 endfunction
 
 function noisyImage = addMultiplicativeNoise(image, noiseRange)

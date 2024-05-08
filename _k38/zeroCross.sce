@@ -1,11 +1,18 @@
 
 function ZeroCrossCallback()
-     global hotImg
+     global hotImg framePlot a1
+     setStatusWorkOn()
     trashHold = getDoubleValueByTag("ZCTrash")
     
-    hotImg= findZeroCross(hotImg,trashHold) // todo считывать trash
+    hotImg= findZeroCross(hotImg,trashHold) 
    
+   
+   
+
+
+        sca(a1);
     imshow(hotImg)
+    setStatusWorkOf()
 endfunction
 
 

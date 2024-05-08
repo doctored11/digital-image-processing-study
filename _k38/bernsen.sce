@@ -1,16 +1,21 @@
 
-clc();
-clear();
-close(winsid());
-
-myThisPath = get_absolute_file_path('bernsen.sce');
-imPath = fullfile(myThisPath, 'res', 'j.jpg');
-im = imread(imPath);
-
-im = rgb2gray(im)
-
-imshow(im)
-scf()
+function BernsenCallack()
+    setStatusWorkOn()
+    disp('Bernsen start')
+     global hotImg
+    windowSize = getDoubleValueByTag("BernWindiwSize")
+    if modulo(windowSize, 2) == 0 then
+        windowSize = windowSize + 1; 
+    end
+    
+    trash = getDoubleValueByTag("BernTrashHold")
+    
+    
+    hotImg = bernsen(hotImg, windowSize, trash);
+    imshow(hotImg);
+    setStatusWorkOf()
+      disp('Bernsen end')
+endfunction
 function paddedImg = fillPadding(imageGray, padding)
     [rows, cols] = size(imageGray);
     paddedImg = zeros(rows + 2 * padding, cols + 2 * padding);
@@ -28,9 +33,9 @@ function paddedImg = fillPadding(imageGray, padding)
     paddedImg((padding + 1):(rows + padding), (padding + 1):(cols + padding)) = imageGray;
 endfunction
 
-function restoredImg = bernsen(image, window_size, threshold)
+function restoredImg = bernsen(image, windowSize, threshold)
     [rows, cols] = size(image);
-  padding = (window_size - 1) / 2;
+  padding = (windowSize - 1) / 2;
     image = fillPadding(image, padding);
       
     restoredImg = zeros(rows, cols);
@@ -52,7 +57,4 @@ endfunction
 
 
 
-window_size = 9; 
-contrast_threshold = 150;
-segmented_img = bernsen(im, window_size, contrast_threshold);
-imshow(segmented_img);
+

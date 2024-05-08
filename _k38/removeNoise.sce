@@ -6,9 +6,10 @@ filterMatrix = double(1/571 * [2,7,12,7,2;
 
 function reduceNoiseCallBack()
 //    возможно вставить самописную из Lr3
+setStatusWorkOn()
      global hotImg;
      hotImg = imfilter(hotImg, filterMatrix);
      imshow(hotImg)
      disp(' filtered showed')
-
+setStatusWorkOf()
 endfunction
