@@ -26,7 +26,7 @@ function addGausNoiseCallBack()
 endfunction
 
 function noisyImage = addMultiplicativeNoise(image, noiseRange)
-//    noise_range - кортеж где 1ое мин второе max
+//    noiseRange - кортеж где 1ое мин второе max
     noisyImage = zeros(size(image));
 
     for i = 1:size(image, 1)
