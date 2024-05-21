@@ -16,6 +16,7 @@ function BernsenCallack()
     setStatusWorkOf()
       disp('Bernsen end')
 endfunction
+
 function paddedImg = fillPadding(imageGray, padding)
     [rows, cols] = size(imageGray);
     paddedImg = zeros(rows + 2 * padding, cols + 2 * padding);
@@ -49,7 +50,14 @@ function restoredImg = bernsen(image, windowSize, threshold)
             maxV = max(windowFilter)
             
             Avg = (minV+maxV)/2 ;
-            if (Avg<threshold)  restoredImg(i - padding, j - padding) = image(i,j)>Avg; end
+//          if image(i, j) > Avg && Avg > threshold
+            if image(i, j) > Avg && image(i, j) < threshold
+                restoredImg(i - padding, j - padding) = 255; 
+            elseif Avg < threshold
+                restoredImg(i - padding, j - padding) = 120; 
+            else
+                restoredImg(i - padding, j - padding) = 0;
+            end
         end
     end
     

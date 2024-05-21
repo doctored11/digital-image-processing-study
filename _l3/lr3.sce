@@ -3,7 +3,7 @@ clear;
 
 
 myThisPath = get_absolute_file_path('lr3.sce');
-imPath = fullfile(myThisPath, 'res', 'i.jpg');
+imPath = fullfile(myThisPath, 'res', '1.jpg');
 
 
 im = imread(imPath);
