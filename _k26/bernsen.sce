@@ -8,12 +8,12 @@ function BernsenCallback()
     if modulo(windowSize, 2) == 0 then
         windowSize = windowSize + 1; 
     end
-    disp(windowSize)
+    disp([windowSize])
     trash = getDoubleValueByTag("BernTrashHold");
 //    
     hotImg = bernsen(hotImg, windowSize, trash);
 
-//     hotImg= segmentationColor(hotImg); //балуюсь К средних
+
      clf(framePlot)
       a1 = newaxes(framePlot);
      a1.axes_bounds = [0 0 1 1];

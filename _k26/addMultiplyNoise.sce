@@ -1,8 +1,6 @@
-function addGausNoiseCallBack()
+function addNoiseCallBack()
     global hotImg;
-    
     setStatusWorkOn()
-    
     if (typeof(hotImg)~= "uint8") then
         hotImg = im2uint8(hotImg)
     end

@@ -1,15 +1,12 @@
 function  otsu()
     setStatusWorkOn()
    global hotImg
-//   image = im2double(hotImg)
-//    imhist
+
     image=hotImg
-//    использую встроенные где  про них можно (можно пожертвовать время и взять из lr2)
+
     histogram =imhist(image);
     numBins = size(histogram, 1);
-//    scf()
-//    plot(histogram)
-//    scf()
+
 
 //    вероятности  каждого уровня яркости
     probabilities = histogram / sum(histogram);

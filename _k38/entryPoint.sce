@@ -6,11 +6,11 @@ clear
 myThisPath = get_absolute_file_path('entryPoint.sce');
 imPath = fullfile(myThisPath, 'res', 'i.jpg');
 
-im = imread(imPath); 
-im = rgb2gray(im);
-
+img = imread(imPath); 
+im = rgb2gray(img);
 
 global hotImg
 hotImg = im
-disp(typeof(hotImg))
+//disp(typeof(hotImg))
+
 

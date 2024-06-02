@@ -13,11 +13,7 @@ function  friel()
   
 
     for i = 1:rows
-        for j = 1:cols
 
-         
-
-//    окно
             startX = max(1, i - radius);
             endX = min(rows, i + radius);
             startY = max(1, j - radius);
@@ -25,24 +21,20 @@ function  friel()
             
             neighborhood = image(startX:endX, startY:endY);
 
-//     среднее значение  пикселей в окрестности
+
             meanValue = mean(neighborhood(:));
 
             image(i, j) = image(i, j)>= meanValue
 //                segmentedImage(i, j) = 255; 
-          
             
         end
         disp(i)
     end
 
 
-//    segmentedImage = uint8(segmentedImage); 
-   
-//    clf();
      hotImg = image
     imshow(hotImg)
-//      imshow(newIm);
+
       setStatusWorkOf();
 
 end

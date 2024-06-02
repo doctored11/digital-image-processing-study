@@ -1,5 +1,5 @@
 
-   function setStatusWorkOn()
+ function setStatusWorkOn()
     global statusObj
     statusObj.String = "Что-то считается ...";
     statusObj.foregroundcolor = [0.95, 0.97, 0.06];
@@ -28,42 +28,6 @@ function [gaussianKernel, X, Y] = getGausMatrix(sigma)
 //    gaussianKernel = gaussianKernel / sum(gaussianKernel(:)); // нормировка
 endfunction
 
-function laplacianGaussian = getLaplasGausMatrix(sigma,X,Y)
-//    по математическим довадам берем 2ую производную о Гауса
-    gaussianSecondDerivativeX = (-1 + X.^2 / sigma^2) .* exp(-(X.^2 + Y.^2) / (2 * sigma^2)) / (sigma^4);
-    gaussianSecondDerivativeY = (-1 + Y.^2 / sigma^2) .* exp(-(X.^2 + Y.^2) / (2 * sigma^2)) / (sigma^4);
-//    gaussianSecondDerivativeXY = (-1 + (Y.^2+X.^2 )/ (2*sigma^2)) .* exp(-(X.^2 + Y.^2) / (2 * sigma^2)) / (sigma^4); 
-//    gaussianSecondDerivativeXY = -1/(%pi*sigma^4).*(1-(X.^2+Y.^2)/(2*sigma^2)) .* exp(-(X.^2 + Y.^2) / (2 * sigma^2))  
-    laplacianGaussian = gaussianSecondDerivativeX+gaussianSecondDerivativeY;
-    
-endfunction
-
-
-function plot3dKernels(X, Y, gaussianKernel,lapGausian)
-    scf()
-   
-    subplot(1,2,1)
-    title('3D   Гауссиан');
-     plot3dMatrix(X, Y, gaussianKernel)
-    
-    subplot(1,2,2)
-    plot3dMatrix(X, Y, -1.*lapGausian);
-     
-    colorbar; 
-   
-    title('3D  Лапласиан Гауссиана');
-    
-    
-endfunction
-
-function plot3dMatrix(X,Y,Kernel)
-    gcf().color_map = coolcolormap(10)
-     xlabel('X');
-    ylabel('Y');
-    zlabel('Z');
-    surf(X, Y, Kernel,'FaceColor', 'interp');
-    
-endfunction
 
 
 
