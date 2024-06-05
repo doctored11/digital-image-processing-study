@@ -4,10 +4,10 @@ clc
 clear
 global myThisPath
 myThisPath = get_absolute_file_path('entryPoint.sce');
-imPath = fullfile(myThisPath, 'res', '1.jpg');
+imPath = fullfile(myThisPath, 'res', '14.jpg');
 
-im = imread(imPath); 
-//im = rgb2gray(img);
+img = imread(imPath); 
+im = rgb2gray(img);
 
 global hotImg
 hotImg = im

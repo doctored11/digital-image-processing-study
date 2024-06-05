@@ -1,14 +1,15 @@
-function Karlot()
+ function Karlot()
   global hotImg bImg framePlot a1 b1 myThisPath
   setStatusWorkOn()
   bImg = hotImg;
-  hotImg = CarlotoSegmentation(hotImg);
+  smoothCount = getDoubleValueByTag("smooth");
+  hotImg = KarlotSegmentation(hotImg);
   hotImg = ColorizeSegments(hotImg);
   showNewPic()
   setStatusWorkOf()
 endfunction
 
-function segmentedImg = CarlotoSegmentation(img)
+function segmentedImg = KarlotSegmentation(img,smoothCount)
 
   histogram = imhist(img);
 
@@ -16,7 +17,7 @@ function segmentedImg = CarlotoSegmentation(img)
   scf()
   plot(histogram)
   
-  numSmoothingPasses =30; 
+  numSmoothingPasses =smoothCount; 
   for k = 1:numSmoothingPasses
     newSmoothedHistogram = smoothedHistogram;
     for i = 2:255
@@ -27,7 +28,7 @@ function segmentedImg = CarlotoSegmentation(img)
   scf()
   plot(smoothedHistogram)
   
-  percent = 0.5;
+  percent = 0;
 
   localMin = [];
   prevMinV = smoothedHistogram(1); 
@@ -40,6 +41,12 @@ function segmentedImg = CarlotoSegmentation(img)
     end
   end
     
+    scf()
+  plot(smoothedHistogram)
+  for i = 1:length(localMin)
+    xset("color", 1) 
+    xpoly([localMin(i); localMin(i)], [0; smoothedHistogram(localMin(i))], "lines") 
+  end
 
   [rows, cols] = size(img);
   segmentedImg = zeros(rows, cols);
@@ -63,22 +70,4 @@ function segmentedImg = CarlotoSegmentation(img)
   end
 endfunction
 
-function coloredImg = ColorizeSegments(segmentedImg)
-  [rows, cols] = size(segmentedImg);
-  numSegments = max(segmentedImg);
-  disp("_")
-  disp(numSegments)
-  colors = rand(numSegments, 3);
 
-  coloredImg = zeros(rows, cols, 3);
-  for i = 1:rows
-    for j = 1:cols
-      segment = segmentedImg(i, j);
-      if segment == 0 then
-          coloredImg(i, j, :) = [0,0,0];
-          else
-      coloredImg(i, j, :) = colors(segment, :);
-      end
-    end
-  end
-endfunction

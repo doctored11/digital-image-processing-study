@@ -1,91 +1,103 @@
 function PalCallBack()
     global hotImg bImg framePlot a1 b1
-    bImg = hotImg;  
+    bImg = hotImg;
+    trashH = getDoubleValueByTag("trashHold")
+    setStatusWorkOn();
 
-    setStatusWorkOn();  
+    hotImg = pal(hotImg, trashH);
+    hotImg = MergeSmallClusters(hotImg);
+    hotImg = ColorizeSegments(hotImg);
+    showNewPic();
 
-    hotImg = pal(hotImg); 
-     hotImg = ColorizeSegments(hotImg);
-    showNewPic();  
-
-    setStatusWorkOf(); 
+    setStatusWorkOf();
 endfunction
 
+function segmentedImg = pal(image, trashH)
+    scaleFactor = 0.55;
+    image = imresize(image, scaleFactor);
+    [rows, cols] = size(image);
+    segmentedImg = zeros(rows, cols);
+    segmentLabel = 10^8;
+    threshold = trashH; 
+    visited = zeros(rows, cols);
 
-function gradImg = pal(image)
-    windowSize = 41; 
-    threshold = 0.1;  
-
-   
-    [height, width] = size(image);
-    halfWindow = floor(windowSize / 2);
-
-    paddedImage = fillPadding(image, halfWindow);
-
-    
-    meanFilter = ones(windowSize, windowSize) / (windowSize * windowSize);
-
-    
-    localMean = correlate(paddedImage, meanFilter);
-    localSqrMean = correlate(paddedImage .^ 2, meanFilter);
-    localStd = sqrt(localSqrMean - localMean .^ 2);
-
-    correlationMap = zeros(height, width);
-    segmentedImage = zeros(height, width);
-
-
-    for i = 1:height
-        for j = 1:width
-            localWindow = paddedImage(i:i + windowSize - 1, j:j + windowSize - 1);
-            centralPixel = paddedImage(i + halfWindow, j + halfWindow);
-            correlation = 0;
-            for k = 1:windowSize
-                for l = 1:windowSize
-                    correlation = correlation + (localWindow(k, l) - localMean(i, j)) * (centralPixel - localMean(i, j));
-                end
+    for i = 1:rows
+        disp(string(i) + " / " + string(rows))
+        for j = 1:cols
+            if visited(i, j) == 0 then
+                [segmentedImg, visited] = RegionGrowing(image, segmentedImg, visited, i, j, segmentLabel, threshold);
+                segmentLabel = segmentLabel + 1;
             end
-            correlation = correlation / (windowSize * windowSize * localStd(i, j) ^ 2);
-            correlationMap(i, j) = correlation;
         end
     end
+    segmentedImg = imresize(segmentedImg, 1/scaleFactor);
+endfunction
 
+function [segmentedImg, visited] = RegionGrowing(image, segmentedImg, visited, x, y, segmentLabel, threshold)
+    [rows, cols] = size(image);
+    seedValue = image(x, y);
+    stack = [x, y];  
 
-    segmentLabel = 1;
-    for i = 1:height
-        for j = 1:width
-            if segmentedImage(i, j) == 0 then
-                if correlationMap(i, j) > threshold then
+    while ~isempty(stack)
+        i = stack($, 1);  
+        j = stack($, 2);
+        stack = stack(1:$-1, :); 
 
-                    queue = [i, j];
-                    while ~isempty(queue)
-                        x = queue(1, 1);
-                        y = queue(1, 2);
-                        queue = queue(2:$, :);
-                        if segmentedImage(x, y) == 0 then
-                            segmentedImage(x, y) = segmentLabel;
+        if i > 0 & i <= rows & j > 0 & j <= cols then
+            if visited(i, j) == 0 & abs(image(i, j) - seedValue) <= threshold then
+                visited(i, j) = 1;
+                segmentedImg(i, j) = segmentLabel;
 
-                            dx = [-1; 1; 0; 0];
-                            dy = [0; 0; -1; 1];
-                            for k = 1:length(dx)
-                                nx = x + dx(k);
-                                ny = y + dy(k);
-                                if nx > 0 && nx <= height && ny > 0 && ny <= width && segmentedImage(nx, ny) == 0 && correlationMap(nx, ny) > threshold then
-                                    queue = [queue; nx, ny];
-                                end
-                            end
-                        end
-                    end
-                    segmentLabel = segmentLabel + 1;
+//               
+                if i+1 <= rows & visited(i+1, j) == 0 then
+                    stack = [stack; i+1, j];
+                end
+                if i-1 > 0 & visited(i-1, j) == 0 then
+                    stack = [stack; i-1, j];
+                end
+                if j+1 <= cols & visited(i, j+1) == 0 then
+                    stack = [stack; i, j+1];
+                end
+                if j-1 > 0 & visited(i, j-1) == 0 then
+                    stack = [stack; i, j-1];
                 end
             end
         end
     end
-
-    gradImg = segmentedImage; 
-    disp(gradImg)
 endfunction
 
 
-function result = correlate(image, filter)
-    result = conv2(image, filter, 'same');  
+function segmentedImg = MergeSmallClusters(segmentedImg)
+    [rows, cols] = size(segmentedImg);
+    numSegments = max(segmentedImg);
+    clusterSizes = zeros(1, numSegments);
+
+    
+    for i = 1:rows
+        for j = 1:cols
+            if segmentedImg(i, j) > 0 then
+                clusterSizes(segmentedImg(i, j)) = clusterSizes(segmentedImg(i, j)) + 1;
+            end
+        end
+    end
+
+    // сорт по величине
+    sortedClusterSizes = gsort(clusterSizes, "g", "i");
+    if length(sortedClusterSizes) >= 3 then
+        thresholdSize = sortedClusterSizes($-1); //от класстера процент минимальный размер 
+    else
+        thresholdSize = sortedClusterSizes($);  
+    end
+
+    
+    for i = 1:rows
+        for j = 1:cols
+            if segmentedImg(i, j) > 0 then
+                if clusterSizes(segmentedImg(i, j)) < 0.15 * thresholdSize then
+                    segmentedImg(i, j) = 0;
+                end
+            end
+        end
+    end
 endfunction
+

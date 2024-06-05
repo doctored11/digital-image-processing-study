@@ -1,7 +1,7 @@
 
    function setStatusWorkOn()
     global statusObj
-    statusObj.String = "Что-то считается ...";
+    statusObj.String = "в процессе ...";
     statusObj.foregroundcolor = [0.95, 0.97, 0.06];
     disp('работа идет')
 endfunction
@@ -9,7 +9,7 @@ endfunction
 function setStatusWorkOf()
     global statusObj
     sleep(500)
-    statusObj.String = "Ничего не происходит";
+    statusObj.String = " ";
     statusObj.foregroundcolor = foregroundRGB;
 endfunction
     
@@ -59,7 +59,7 @@ function paddedImg = fillPadding(imageGray, padding)
 endfunction
 
 function showNewPic()
-    global hotImg bImg framePlot a1 b1
+    global hotImg bImg framePlot a1 b1 framePlot2
    
     clf(framePlot2)
        b1 = newaxes(framePlot2);
@@ -84,3 +84,24 @@ function backImg()
       showNewPic()
       setStatusWorkOf()
 endfunction
+
+function coloredImg = ColorizeSegments(segmentedImg)
+  [rows, cols] = size(segmentedImg);
+  numSegments = max(segmentedImg);
+  disp("_")
+  disp(numSegments)
+  colors = rand(numSegments, 3);
+
+  coloredImg = zeros(rows, cols, 3);
+  for i = 1:rows
+    for j = 1:cols
+      segment = segmentedImg(i, j);
+      if segment == 0 then
+          coloredImg(i, j, :) = [0,0,0];
+          else
+      coloredImg(i, j, :) = colors(segment, :);
+      end
+    end
+  end
+endfunction
+
