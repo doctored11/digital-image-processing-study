@@ -17,7 +17,7 @@ function segmentedImg = pal(image, trashH)
     image = imresize(image, scaleFactor);
     [rows, cols] = size(image);
     segmentedImg = zeros(rows, cols);
-    segmentLabel = 10^8;
+    segmentLabel = 1;
     threshold = trashH; 
     visited = zeros(rows, cols);
 
@@ -43,22 +43,22 @@ function [segmentedImg, visited] = RegionGrowing(image, segmentedImg, visited, x
         j = stack($, 2);
         stack = stack(1:$-1, :); 
 
-        if i > 0 & i <= rows & j > 0 & j <= cols then
-            if visited(i, j) == 0 & abs(image(i, j) - seedValue) <= threshold then
+        if i > 0 && i <= rows && j > 0 && j <= cols then
+            if visited(i, j) == 0 && abs(image(i, j) - seedValue) <= threshold then
                 visited(i, j) = 1;
                 segmentedImg(i, j) = segmentLabel;
 
 //               
-                if i+1 <= rows & visited(i+1, j) == 0 then
+                if i+1 <= rows && visited(i+1, j) == 0 then
                     stack = [stack; i+1, j];
                 end
-                if i-1 > 0 & visited(i-1, j) == 0 then
+                if i-1 > 0 && visited(i-1, j) == 0 then
                     stack = [stack; i-1, j];
                 end
-                if j+1 <= cols & visited(i, j+1) == 0 then
+                if j+1 <= cols && visited(i, j+1) == 0 then
                     stack = [stack; i, j+1];
                 end
-                if j-1 > 0 & visited(i, j-1) == 0 then
+                if j-1 > 0 && visited(i, j-1) == 0 then
                     stack = [stack; i, j-1];
                 end
             end

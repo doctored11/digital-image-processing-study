@@ -20,9 +20,9 @@
         "position", [0.5, 0.45, 0.55, 0.55]); 
         
          clf(framePlot);
-    a1 = newaxes(framePlot);
-    a1.axes_bounds = [0 0 1 1];
-    sca(a1);
+        a1 = newaxes(framePlot);
+        a1.axes_bounds = [0 0 1 1];
+        sca(a1);
     
     imshow(hotImg)
     

@@ -1,37 +1,40 @@
+close(winsid());
+clc;
+clear;
+global myThisPath;
+myThisPath = get_absolute_file_path('entryPoint.sce');
+imPath = fullfile(myThisPath, 'res', 'q.jpg');
 
-//Не верный Эйквил - оставил как сомнительную реализацию метода к средних
-// !Устаревший файл - не используется 
-function EikvilCallBack()
-     global hotImg framePlot a1
-       setStatusWorkOn();
-       
-        k = getDoubleValueByTag("kNum");
-        iterCount = getDoubleValueByTag("iterNum");
-        
-     hotImg = eikvilSegmentation(hotImg,k,iterCount );
+img = imread(imPath);
+grayImg = rgb2gray(img);
+
+function start()
+     imshow(grayImg)
+    scf()
+    t=1
+    sigma=1
+    [gaussianMatrixFilt, X, Y] = getGausMatrix(sigma);
+     
+  
+    [imgCl, brightness] = kmeans(grayImg, 2, 15)
+    disp(brightness)
     
-     clf(framePlot)
-      a1 = newaxes(framePlot);
-     a1.axes_bounds = [0 0 1 1];
-        sca(a1);
-    imshow(hotImg);
-   
-    setStatusWorkOf();
-    disp('E end');
+    optimalTreshHold=mean(brightness)*t
+    
+    grayImg = im2double(grayImg)
+    grayImg = conv2(grayImg,gaussianMatrixFilt,'same');
+     
+    imshow(imgCl)
+    scf()
+    disp([max(grayImg),optimalTreshHold])
+    fImg =grayImg.*255>optimalTreshHold
+
+    imshow(fImg)
+    
 endfunction
 
-labels=[]
- function clusterImg =  eikvilSegmentation(img, k,iterCount)
-     
-    grayImage =img
-    [h, w] = size(grayImage);
 
-   labels= kmeans(grayImage, k,iterCount);
-     clusterImg = labels
-     endfunction
-
-
-function clustered_image = kmeans(img, k, max_iterations)
+function [clustered_image,clusterBrightness] = kmeans(img, k, max_iterations)
     [h, w] = size(img);
     img = double(img)
    //временно
@@ -122,13 +125,14 @@ function clustered_image = kmeans(img, k, max_iterations)
             disp(" =" +string( clusters(1).center(1))+","+string( clusters(1).center(2))+" _ "+string(clusters(1).brightness) +"  |  "...
             +string( clusters(2).center(1))+","+string( clusters(2).center(2))+" _ "+string(clusters(2).brightness) );
     end
-    
+    clusterBrightness = []
       clustered_image = zeros(h, w, 3, 'uint8'); 
         //        disp(size(cluster))
                  for i = 1:h
                 for j = 1:w
                     clusterIndex = closest_cluster(i, j); 
                     clusterColor = clusters(clusterIndex).color; 
+                    clusterBrightness(clusterIndex)=  clusters(clusterIndex).brightness
                     clustered_image(i, j, :) = clusterColor; 
                 end
             end
@@ -140,4 +144,14 @@ endfunction
 
 function color = generate_random_color()
     color = uint8(rand(1, 3) * 255); 
+endfunction
+
+function [gaussianKernel, X, Y] = getGausMatrix(sigma) 
+    kernelSize = ceil(10 * sigma);
+    
+    [X, Y] = meshgrid(-kernelSize:kernelSize, -kernelSize:kernelSize);
+        gaussianKernel = exp(-(X.^2 + Y.^2) / (2 * sigma^2)) / (2 * %pi * sigma^2); //уже с нормаировкой 
+
+//
+//    gaussianKernel = gaussianKernel / sum(gaussianKernel(:)); // нормировка
 endfunction
